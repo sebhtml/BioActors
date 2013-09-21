@@ -21,7 +21,6 @@ private:
 
 	int rank;
 	int size;
-	int maximumNumberOfActors;
 
 	int sourceActorOffset;
 	int destinationActorOffset;
@@ -47,18 +46,12 @@ public:
 		routingMessagesReceived = 0;
 		probeOperations = 0;
 
-		maximumNumberOfActors = 131072;
-
 		int items = 0;
 		sourceActorOffset = 0 + items++ * sizeof(int);
 		destinationActorOffset = 0 + items++ * sizeof(int);
 		sourceRankOffset = 0 + items++ * sizeof(int);
 		destinationRankOffset = 0 + items++ * sizeof(int);
 		contentOffset = 0 + items++ * sizeof(int);
-	}
-
-	int GetMaximumNumberOfActors() {
-		return maximumNumberOfActors;
 	}
 
 	bool Receive(Message & message) {
@@ -132,7 +125,7 @@ public:
 		*/
 
 		int address = message.GetSource();
-		int sourceRank = GetRankFromAddress(address);
+		//int sourceRank = GetRankFromAddress(address);
 		int destinationRank = GetRankFromAddress(destination);
 
 		/*
@@ -215,8 +208,6 @@ public:
 	}
 
 	int GetRankFromAddress(int & actorAddress) {
-
-		//return actorAddress / maximumNumberOfActors;
 
 		return actorAddress % size;
 	}

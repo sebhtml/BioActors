@@ -61,7 +61,7 @@ public:
 	void Boot() {
 		cout << "[" << GetAddress() << "] ";
 		cout << "I am booting now ( " << GetAddress() << ") ";
-		cout << " actors " << GetSize() << endl;
+		cout << " ranks " << GetSize() << endl;
 
 		int address = GetAddress();
 
