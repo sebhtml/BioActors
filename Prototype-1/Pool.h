@@ -69,10 +69,11 @@ public:
 
 		Message message;
 
-		cout << "Pool: booting actors" << endl;
+		//cout << "Pool: booting actors" << endl;
 
 		// first, boot every actor by sending the message BOOT
 		int bootTag = Actor::BOOT;
+
 		for(int i = 0 ; i < nextActorIdentifier ; ++i) {
 
 			Actor * actor = actors[i];
@@ -89,7 +90,7 @@ public:
 
 		int tick = 0;
 
-		cout << "Pool: entering loop" << endl;
+		//cout << "Pool: entering loop" << endl;
 
 		// do the main loop now.
 		while(aliveActors > 0) {
@@ -103,12 +104,16 @@ public:
 				break;
 				*/
 
-			if(Receive(message)) {
+			if(channel.Receive(message)) {
 
 				Dispatch(message);
 			}
 
 		}
+
+	}
+
+	void Finalize() {
 
 		channel.Finalize();
 	}
@@ -124,19 +129,27 @@ public:
 		cout << " rank " << rank << endl;
 		*/
 
+		int localIdentifier = destinationActor / size;
+
+		/*
 		int localIdentifier = destinationActor;
 	       
 		if(rank > 0)
 			localIdentifier = destinationActor % rank;
+		*/
+
+		/*
+		cout << "Dispatching to address " << destinationActor;
+		cout << " on rank " << rank;
+		cout << " trying local actor # " << localIdentifier;
+		cout << endl;
+		*/
 
 		if(localIdentifier < nextActorIdentifier) {
 			Actor * actor = actors[localIdentifier];
 
 			if(actor == NULL)
 				return;
-
-			cout << "Dispatching to address " << destinationActor;
-			cout << endl;
 
 			actor->Receive(message);
 
@@ -150,13 +163,6 @@ public:
 
 	}
 
-	bool Receive(Message & message) {
-		return channel.Receive(message);
-	}
-
-	void Send(int & destination, Message & message) {
-		return channel.Send(destination, message);
-	}
 };
 
 #endif

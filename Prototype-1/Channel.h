@@ -27,6 +27,7 @@ public:
 	}
 
 	bool Receive(Message & message) {
+
 		int source = MPI_ANY_SOURCE;
 		int tag = MPI_ANY_TAG;
 
@@ -57,33 +58,37 @@ public:
 
 		message.SetContentSize(count);
 
+		/*
 		cout << "Channel got a message with tag ";
 		cout << tag << ", ";
 		cout << message.GetSource() << " -> " << source;
 		cout << " " << message.GetDestination();
 		cout << " -> " << rank << endl;
+		*/
 
 		return true;
 	}
 
 	void Send(int & destination, Message & message) {
 
-		message.SetDestination(destination);
-
 		int tag = message.GetTag();
 
+		/*
 		cout << "Channel is sending message with tag";
 		cout << " " << tag << " from ";
 		cout << message.GetSource();
 		cout << " to " << message.GetDestination() << endl;
+		*/
 
 		int address = message.GetSource();
 		int sourceRank = GetRankFromAddress(address);
 		int destinationRank = GetRankFromAddress(destination);
 
+		/*
 		cout << "Send: mapping= " << address << " -> " << sourceRank;
 		cout << " " << destination << " -> " << destinationRank;
 		cout << endl;
+		*/
 
 		char * buffer = message.GetContent();
 		buffer -= Message::METADATA_SIZE;

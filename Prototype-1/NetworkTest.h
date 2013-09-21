@@ -17,12 +17,14 @@ public:
 
 		Initialize(argc, argv);
 
-		for(int i = 0 ; i < 2; ++i) {
+		for(int i = 0 ; i < 32; ++i) {
 			NetworkTester * actor = new NetworkTester();
 			AddActor(actor);
 		}
 
 		Start();
+
+		Finalize();
 	}
 };
 

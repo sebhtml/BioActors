@@ -20,6 +20,8 @@ protected:
 	void Send(int & destination, Message & message) {
 
 		message.SetSource(address);
+		message.SetDestination(destination);
+
 		channel->Send(destination, message);
 	}
 
