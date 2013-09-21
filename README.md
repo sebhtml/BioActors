@@ -1,28 +1,11 @@
+BioActors
 
-license: BSD
-provides:
+Implementation of some features of the
+actor model in C++ 1998/MPI 1.0.
 
-use MPI_Comm_dup to have a namespace to the library.
+See:
 
-	allocateMessageHandle
+Gul Agha
+Actors: a model of concurrent computation in distributed systems
+http://dl.acm.org/citation.cfm?id=7929
 
-	while(1){
-	
-		receiveMessage()
-		
-		if(haveMessage())
-			processMessage()
-	}
-
-
-source is int
-destination is int
-tag is int
-message content has bytes (char)
-
-also, 2 * 32 bits for routing at the end of content
-
-
-Actors are numbered using:
-
-actorIdentifier = actorRank + iterator * numberOfRanks
