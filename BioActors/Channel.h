@@ -5,6 +5,7 @@
 #define ChannelHeader
 
 #include "Message.h"
+#include "Ring.h"
 
 #include <mpi.h>
 #include <iostream>
@@ -16,13 +17,29 @@ private:
 	MPI_Comm routingCommunicator;
 	MPI_Comm messagingCommunicator;
 
+	Ring ring;
+
 	int rank;
 	int size;
 	int maximumNumberOfActors;
 
+	int sourceActorOffset;
+	int destinationActorOffset;
+	int sourceRankOffset;
+	int destinationRankOffset;
+	int contentOffset;
+
+	char * receivingBuffer;
 public:
 	Channel() {
 		maximumNumberOfActors = 131072;
+
+		int items = 0;
+		sourceActorOffset = 0 + items++ * sizeof(int);
+		destinationActorOffset = 0 + items++ * sizeof(int);
+		sourceRankOffset = 0 + items++ * sizeof(int);
+		destinationRankOffset = 0 + items++ * sizeof(int);
+		contentOffset = 0 + items++ * sizeof(int);
 	}
 
 	int GetMaximumNumberOfActors() {
@@ -30,6 +47,9 @@ public:
 	}
 
 	bool Receive(Message & message) {
+
+		// do a bunch of MPI_Test
+		ring.TestBuffers();
 
 		int source = MPI_ANY_SOURCE;
 		int tag = MPI_ANY_TAG;
@@ -53,13 +73,23 @@ public:
 		int count = 0;
 		MPI_Get_count(&status, datatype, &count);
 
-		char * buffer = message.GetContent();
-		buffer -= Message::METADATA_SIZE;
-
-		MPI_Recv(buffer, count, datatype, source, tag,
+		MPI_Recv(receivingBuffer, count, datatype, source, tag,
 				messagingCommunicator, &status);
 
+		int sourceActor = -1;
+		int destinationActor = -1;
+
+		memcpy(&sourceActor, receivingBuffer + sourceActorOffset, sizeof(int));
+		memcpy(&destinationActor, receivingBuffer + destinationActorOffset, sizeof(int));
+
+		char * content = message.GetContent();
+		count -= contentOffset;
+
+		memcpy(content, receivingBuffer + contentOffset, count * sizeof(char));
+
 		message.SetContentSize(count);
+		message.SetSource(sourceActor);
+		message.SetDestination(destinationActor);
 
 		/*
 		cout << "Channel got a message with tag ";
@@ -93,23 +123,35 @@ public:
 		cout << endl;
 		*/
 
-		char * buffer = message.GetContent();
-		buffer -= Message::METADATA_SIZE;
-
+		char * content = message.GetContent();
 		int count = message.GetContentSize();
 
-		MPI_Request request;
+		MPI_Request * request = NULL;
+		char * buffer = ring.GetBuffer(request);
+
+		memcpy(buffer + sourceActorOffset, &address, sizeof(int));
+		memcpy(buffer + destinationActorOffset, &destination, sizeof(int));
+
+		memcpy(buffer + contentOffset, content, count);
+
+		count += contentOffset;
+
 		MPI_Datatype datatype = MPI_BYTE;
 
-		MPI_Isend(buffer, count, datatype, destinationRank,
-				tag, messagingCommunicator, &request);
+		/*
+		cout << "Isend with buffer " << buffer << " " << count;
+		cout << " from rank " << rank << " to rank ";
+		cout << destinationRank;
+		cout << " request is " << request << endl;
+		*/
 
-		MPI_Request_free(&request);
+		MPI_Isend(buffer, count, datatype, destinationRank,
+				tag, messagingCommunicator, request);
 	}
 
 	void Initialize(int * numberOfArguments, char *** argumentValues) {
 		MPI_Init(numberOfArguments, argumentValues);
-		
+
 		MPI_Comm_dup(MPI_COMM_WORLD, &routingCommunicator);
 		MPI_Comm_dup(MPI_COMM_WORLD, &messagingCommunicator);
 
@@ -117,9 +159,15 @@ public:
 		MPI_Comm_size(messagingCommunicator, &size);
 
 		//cout << "Channel rank= " << rank << " size= " << size << endl;
+
+		ring.Initialize();
+
+		receivingBuffer = new char[4 * sizeof(int) + Message::MAXIMUM_SIZE];
 	}
 
 	void Finalize() {
+
+		//ring.Print();
 
 		MPI_Finalize();
 	}
@@ -139,8 +187,6 @@ public:
 
 		return actorAddress % size;
 	}
-
-
 
 };
 
