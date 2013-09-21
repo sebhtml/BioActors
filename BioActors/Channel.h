@@ -30,8 +30,23 @@ private:
 	int contentOffset;
 
 	char * receivingBuffer;
+
+	int probeOperations;
+	int messagesSent;
+	int messagesReceived;
+
+	int routingMessagesSent;
+	int routingMessagesReceived;
+
 public:
 	Channel() {
+
+		messagesSent = 0;
+		messagesReceived = 0;
+		routingMessagesSent = 0;
+		routingMessagesReceived = 0;
+		probeOperations = 0;
+
 		maximumNumberOfActors = 131072;
 
 		int items = 0;
@@ -59,6 +74,8 @@ public:
 
 		MPI_Iprobe(source, tag, messagingCommunicator, &flag, 
 				               &status);
+
+		probeOperations ++;
 
 		if(!flag)
 			return false;
@@ -99,6 +116,7 @@ public:
 		cout << " -> " << rank << endl;
 		*/
 
+		messagesReceived++;
 		return true;
 	}
 
@@ -147,6 +165,8 @@ public:
 
 		MPI_Isend(buffer, count, datatype, destinationRank,
 				tag, messagingCommunicator, request);
+
+		messagesSent ++;
 	}
 
 	void Initialize(int * numberOfArguments, char *** argumentValues) {
@@ -167,9 +187,22 @@ public:
 
 	void Finalize() {
 
-		//ring.Print();
+		Print();
 
 		MPI_Finalize();
+	}
+
+	void Print() {
+
+		cout << "Channel metrics for rank " << rank << "/" << size << endl;
+
+		cout << "probeOperations " << probeOperations << endl;
+		cout << "messagesSent " << messagesSent << endl;
+		cout << "messagesReceived " << messagesReceived << endl;
+		cout << "routingMessagesSent " << routingMessagesSent << endl;
+		cout << "routingMessagesReceived " << routingMessagesReceived << endl;
+
+		ring.Print();
 	}
 
 	int GetRank() {
