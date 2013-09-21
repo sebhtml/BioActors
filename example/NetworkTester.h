@@ -8,8 +8,6 @@
 
 class NetworkTester : public Actor{
 
-	Message dummyMessage;
-
 	enum {
 		BOOT, // needed to offset values by 1
 		SAY_HELLO,
@@ -50,6 +48,7 @@ public:
 		cout << "[" << GetAddress() << "] ";
 		cout << "Hello ! I am " << GetAddress() << endl;
 
+		Message dummyMessage;
 		dummyMessage.SetTag(DIE);
 
 		int address = GetAddress();
@@ -69,6 +68,7 @@ public:
 		cout << "[" << GetAddress() << "] ";
 		cout << "Sending message to " << address << endl;
 
+		Message dummyMessage;
 		dummyMessage.SetTag(SAY_HELLO);
 
 		Send(address, dummyMessage);
