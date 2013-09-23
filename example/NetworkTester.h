@@ -47,8 +47,11 @@ public:
 		tm=localtime(&tv.tv_sec);
 		//printf(" %d:%02d:%02d %ld \n", tm->tm_hour, tm->tm_min,tm->tm_sec, tv.tv_usec);
 
-		uint64_t value = tm->tm_sec;
-		value *= 1000000;
+		uint64_t value = 0;
+		uint64_t hours = tm->tm_hour;
+		value += (60 * 1000 * 1000 * hours);
+		value += 60 * 1000000 * (uint64_t)tm->tm_min;
+		value += 1000000 * (uint64_t)tm->tm_sec;
 		value += tv.tv_usec;
 
 		return value;
