@@ -4,8 +4,9 @@
 #ifndef NetworkTestHeader
 #define NetworkTestHeader
 
-#include "NetworkTester.h"
 #include <BioActors/Pool.h>
+
+#include "Starter.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -22,20 +23,8 @@ public:
 
 		Initialize(argc, argv);
 
-		int actorsPerRank = 1;
-
-		if(*argc == 2)
-			actorsPerRank = atoi((*argv)[1]);
-
-		NetworkTester::ACTORS_PER_RANK = actorsPerRank;
-
-		NetworkTester * actor = new NetworkTester();
+		Actor * actor = new Starter();
 		Spawn(actor);
-
-		//cout << "NetworkTest create actor " << address << endl;
-
-		int rank = GetRank();
-		srand(time(NULL) * rank);
 
 		Start();
 

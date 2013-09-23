@@ -3,6 +3,9 @@
 #include "Actor.h"
 #include "Pool.h"
 
+#include <iostream>
+using namespace std;
+
 void Actor::Send(int & destination, Message & message) {
 
 	message.SetSource(address);
@@ -53,4 +56,8 @@ bool Actor::IsDead() {
 int Actor::Spawn(Actor * actor) {
 
 	return pool->Spawn(actor);
+}
+
+void Actor::PrintAddress() {
+	cout << "[actor#" << GetAddress() << "] ";
 }

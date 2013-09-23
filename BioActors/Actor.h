@@ -70,6 +70,8 @@ public:
 
 	bool IsDead();
 	int GetAddress();
+
+	void PrintAddress();
 };
 
 #endif
