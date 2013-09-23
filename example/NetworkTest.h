@@ -22,6 +22,8 @@ public:
 
 		Initialize(argc, argv);
 
+		NetworkTester::ACTORS_PER_RANK = 2;
+
 		int rank = GetRank();
 
 		srand(time(NULL) * rank);

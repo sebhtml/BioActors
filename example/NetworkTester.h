@@ -92,8 +92,12 @@ public:
 	}
 
 	void SayHello(Message & message) {
+
+		int total = GetSize() * ACTORS_PER_RANK;
+
 		cout << "[" << GetAddress() << "] ";
-		cout << "Hello ! I am " << GetAddress() << endl;
+		cout << "Hello ! I am " << GetAddress();
+		cout << " out of " << total << " actors" << endl;
 
 		Message dummyMessage;
 		dummyMessage.SetTag(TEST_MESSAGE_RESPONSE);
@@ -113,7 +117,7 @@ public:
 
 		messages ++;
 
-		int messagesToSend = 1000;
+		int messagesToSend = 10000;
 
 		if(messages == messagesToSend) {
 
@@ -162,6 +166,6 @@ public:
 	}
 };
 
-int NetworkTester::ACTORS_PER_RANK = 32;
+int NetworkTester::ACTORS_PER_RANK = 320;
 
 #endif
