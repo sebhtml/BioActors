@@ -55,7 +55,7 @@ protected:
 public:
 
 	enum {
-		BOOT
+		BOOT = 99999999
 	};
 
 	Actor();

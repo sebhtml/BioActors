@@ -74,6 +74,9 @@ char * Ring::GetBuffer(MPI_Request * & request) {
 
 void Ring::TestBuffers() {
 
+	if(requests.size() == 0)
+		return;
+
 	int iterator = last;
 	int tested = 0;
 

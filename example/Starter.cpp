@@ -50,6 +50,13 @@ void Starter::Boot(Message & message) {
 
 		PrintAddress();
 		cout << "spawns actor " << actor->GetAddress() << endl;
+
+		int address = actor->GetAddress();
+
+		Message startMessage;
+		startMessage.SetTag(NetworkTester::START);
+		Send(address, startMessage);
+
 	}
 
 }

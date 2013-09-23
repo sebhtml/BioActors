@@ -58,7 +58,9 @@ void Pool::Start() {
 	// first, boot every actor by sending the message BOOT
 	int bootTag = Actor::BOOT;
 
-	for(int i = 0 ; i < nextActorIdentifier ; ++i) {
+	int actorsToBoot = nextActorIdentifier;
+
+	for(int i = 0 ; i < actorsToBoot ; ++i) {
 
 		Actor * actor = actors[i];
 

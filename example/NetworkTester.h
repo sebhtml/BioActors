@@ -24,6 +24,7 @@ private:
 public:
 
 	enum {
+		BOOT,
 		START, // needed to offset values by 1
 		SAY_HELLO,
 		TEST_MESSAGE,
