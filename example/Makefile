@@ -1,4 +1,4 @@
-CXXFLAGS=-O3 -Wall -std=c++98 -g
+CXXFLAGS=-O3 -Wall -std=c++98 -g -march=native
 #STRIP=true
 STRIP=strip
 
