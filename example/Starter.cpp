@@ -1,4 +1,7 @@
 
+
+// License: see LICENSE.txt
+
 #include "Starter.h"
 #include "NetworkTester.h"
 

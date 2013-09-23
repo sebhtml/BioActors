@@ -1,13 +1,18 @@
+#Makefile
+
 MPICXX=mpicxx
+STRIP=true
+ECHO=echo
+#STRIP=strip
 Q=@
 
 CXXFLAGS=-O3 -Wall -std=c++98 -g -march=native
 
-STRIP=true
-ECHO=echo
-#STRIP=strip
-BIOACTOR_OBJECTS=../BioActors/Actor.o ../BioActors/Message.o
+
+BIOACTOR_OBJECTS=../BioActors/Actor.o ../BioActors/Message.o ../BioActors/Ring.o ../BioActors/Pool.o ../BioActors/Channel.o
+
 EXAMPLE_OBJECTS=main.o NetworkTester.o Starter.o
+
 TARGET=NetworkTest
 
 # inference rule
