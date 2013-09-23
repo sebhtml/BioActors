@@ -65,8 +65,14 @@ public:
 		MPI_Status status;
 		int flag = 0;
 
+		/*
 		MPI_Iprobe(source, tag, messagingCommunicator, &flag, 
 				               &status);
+		*/
+
+		MPI_Probe(source, tag, messagingCommunicator, &status);
+
+		flag = 1;
 
 		probeOperations ++;
 
