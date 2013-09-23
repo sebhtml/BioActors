@@ -8,6 +8,23 @@
 #include "Channel.h"
 #include "Message.h"
 
+class Pool;
+
+/**
+ *
+ * \see Gul Agha (1986)
+ * Actors: a model of concurrent computation in distributed systems
+ * http://dl.acm.org/citation.cfm?id=7929
+ *
+ * When receiving a message, an actor can:
+ *
+ * 1. Send messages to other actors (or itself)
+ *
+ * 2. Create new actors
+ *
+ * 3. Change its behavior (here this is implemented with the internal
+ * state of the objects of a specialized class.
+ **/
 class Actor {
 
 private:
@@ -15,62 +32,44 @@ private:
 	int address;
 	int size;
 	Channel * channel;
+	Pool * pool;
 	bool dead;
 
 protected:
 
-	void Send(int & destination, Message & message) {
+	/*
+	 * Send a message
+	 **/
+	void Send(int & destination, Message & message);
 
-		message.SetSource(address);
-		message.SetDestination(destination);
+	/**
+	 * Spawn a new actor
+	 **/
+	int Spawn(Actor * actor);
 
-		channel->Send(destination, message);
-	}
+	/**
+	 * Die of a beautiful death.
+	 */
+	void Die(Message & message);
 
 public:
-
-	Actor() {
-
-	}
-
-	virtual ~Actor() {
-
-	}
 
 	enum {
 		BOOT
 	};
 
+	Actor();
+	virtual ~Actor();
+
 	virtual void Receive(Message & message) = 0;
 
-	// TODO: use a constructor
-	void SetAddress(int newAddress, int newSize, Channel * newChannel) {
+	void SetAddress(int newAddress, int newSize, Channel * newChannel,
+			Pool * pool);
 
-		//cout << "SetAddress .... " << newAddress << endl;
+	int GetSize();
 
-		address = newAddress;
-		size = newSize;
-		channel = newChannel;
-
-		dead = false;
-	}
-
-	int GetAddress() {
-		return address;
-	}
-
-	int GetSize() {
-		return size;
-	}
-
-	void Die(Message & message) {
-		dead = true;
-	}
-
-	bool IsDead() {
-		return dead;
-
-	}
+	bool IsDead();
+	int GetAddress();
 };
 
 #endif

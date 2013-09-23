@@ -39,22 +39,18 @@ public:
 	}
 
 	//template <class ActorType>
-	void AddActor(Actor * actor) {
-
-		//int localIdentifier = nextActorIdentifier;
+	int Spawn(Actor * actor) {
 
 		actors[nextActorIdentifier] = actor;
 
-		//cout << "Adding actor on rank " << rank << endl;
-	
 		int address = rank + nextActorIdentifier * size;
 
-		//cout << "AddActor address= " << address << endl;
-
-		actor->SetAddress(address, size, &channel);
+		actor->SetAddress(address, size, &channel, this);
 
 		aliveActors ++;
 		nextActorIdentifier++;
+
+		return address;
 	}
 
 	void Initialize(int * numberOfArguments, char *** argumentValues) {
@@ -63,8 +59,6 @@ public:
 		
 		rank = channel.GetRank();
 		size = channel.GetSize();
-
-		//cout << "Pool -> rank " << rank << " size " << size << endl;
 
 		nextActorIdentifier = 0;
 

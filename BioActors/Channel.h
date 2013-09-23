@@ -149,6 +149,7 @@ public:
 		memcpy(buffer + sourceActorOffset, &address, sizeof(int));
 		memcpy(buffer + destinationActorOffset, &destination, sizeof(int));
 
+		//cout << " contentOffset " << " " << count << endl;
 		memcpy(buffer + contentOffset, content, count);
 
 		count += contentOffset;

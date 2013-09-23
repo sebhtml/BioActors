@@ -29,14 +29,13 @@ public:
 
 		NetworkTester::ACTORS_PER_RANK = actorsPerRank;
 
+		NetworkTester * actor = new NetworkTester();
+		Spawn(actor);
+
+		//cout << "NetworkTest create actor " << address << endl;
+
 		int rank = GetRank();
-
 		srand(time(NULL) * rank);
-
-		for(int i = 0 ; i < NetworkTester::ACTORS_PER_RANK; ++i) {
-			NetworkTester * actor = new NetworkTester();
-			AddActor(actor);
-		}
 
 		Start();
 
