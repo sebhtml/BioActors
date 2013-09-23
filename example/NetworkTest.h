@@ -22,7 +22,7 @@ public:
 
 		Initialize(argc, argv);
 
-		NetworkTester::ACTORS_PER_RANK = 2;
+		NetworkTester::ACTORS_PER_RANK = 256;
 
 		int rank = GetRank();
 

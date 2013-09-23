@@ -7,6 +7,8 @@
 #include <BioActors/Actor.h>
 
 #include <stdlib.h>
+#include <sys/time.h>
+#include <stdint.h>
 
 class NetworkTester : public Actor{
 
@@ -15,6 +17,10 @@ private:
 	int messages;
 	int finished;
 	int controller;
+
+	uint64_t timeBefore;
+
+	uint64_t sum;
 
 	enum {
 		BOOT, // needed to offset values by 1
@@ -30,6 +36,22 @@ public:
 
 	NetworkTester() {
 
+	}
+
+	uint64_t GetMicroSeconds() {
+
+		struct timeval tv;
+		struct timezone tz;
+		struct tm *tm;
+		gettimeofday(&tv, &tz);
+		tm=localtime(&tv.tv_sec);
+		//printf(" %d:%02d:%02d %ld \n", tm->tm_hour, tm->tm_min,tm->tm_sec, tv.tv_usec);
+
+		uint64_t value = tm->tm_sec;
+		value *= 1000000;
+		value += tv.tv_usec;
+
+		return value;
 	}
 
 	void Receive(Message & message) {
@@ -79,10 +101,12 @@ public:
 
 		int total = GetSize() * ACTORS_PER_RANK;
 
-		if(finished == ACTORS_PER_RANK) {
+		if(finished == total) {
 
 			Message death;
 			death.SetTag(DIE);
+
+			cout << "[" << GetAddress() << "] killing everyone now." << endl;
 
 			for(int i = 0; i < total; ++i) {
 
@@ -103,6 +127,8 @@ public:
 		dummyMessage.SetTag(TEST_MESSAGE_RESPONSE);
 
 		int address = GetAddress();
+
+		timeBefore = GetMicroSeconds();
 		Send(address, dummyMessage);
 	}
 
@@ -110,10 +136,17 @@ public:
 		int address = message.GetSource();
 		Message dummyMessage;
 		dummyMessage.SetTag(TEST_MESSAGE_RESPONSE);
+		timeBefore = GetMicroSeconds();
 		Send(address, dummyMessage);
 	}
 
 	void TestMessageResponse(Message & message) {
+
+		uint64_t timeAfter = GetMicroSeconds();
+
+		int latency = (timeAfter - timeBefore) / 2;
+
+		sum += latency;
 
 		messages ++;
 
@@ -123,7 +156,12 @@ public:
 
 			cout << "[" << GetAddress() << "] ";
 			cout << " communicated " << messages << " ";
-			cout << " TEST_MESSAGE messages" << endl;
+			cout << " TEST_MESSAGE messages";
+
+			int average = sum / messages;
+
+			cout << " point-to-point latency: ";
+			cout << average << " us" << endl;
 
 			// kill the actor
 			Message dummyMessage;
@@ -145,6 +183,7 @@ public:
 
 	void Boot(Message & message) {
 
+		sum = 0;
 		messages = 0;
 		finished = 0;
 		controller = 0;

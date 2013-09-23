@@ -180,7 +180,7 @@ public:
 
 	void Finalize() {
 
-		Print();
+		//Print();
 
 		MPI_Finalize();
 	}

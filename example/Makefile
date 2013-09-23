@@ -1,2 +1,7 @@
+CXXFLAGS=-O3 -Wall -std=c++98 -g
+#STRIP=true
+STRIP=strip
+
 all:
-	mpicxx main.cpp -g -O2 -Wall -o NetworkTest -I..
+	mpicxx main.cpp $(CXXFLAGS) -o NetworkTest -I..
+	$(STRIP) NetworkTest
