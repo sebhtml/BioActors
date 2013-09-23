@@ -30,6 +30,14 @@ public:
 	Pool() {
 	}
 
+	int GetRank() {
+		return rank;
+	}
+
+	int GetSize() {
+		return size;
+	}
+
 	//template <class ActorType>
 	void AddActor(Actor * actor) {
 

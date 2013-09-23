@@ -7,6 +7,9 @@
 #include "NetworkTester.h"
 #include <BioActors/Pool.h>
 
+#include <stdlib.h>
+#include <time.h>
+
 class NetworkTest : public Pool {
 
 public:
@@ -19,7 +22,11 @@ public:
 
 		Initialize(argc, argv);
 
-		for(int i = 0 ; i < 32; ++i) {
+		int rank = GetRank();
+
+		srand(time(NULL) * rank);
+
+		for(int i = 0 ; i < NetworkTester::ACTORS_PER_RANK; ++i) {
 			NetworkTester * actor = new NetworkTester();
 			AddActor(actor);
 		}

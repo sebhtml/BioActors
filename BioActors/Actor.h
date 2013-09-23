@@ -29,6 +29,14 @@ protected:
 
 public:
 
+	Actor() {
+
+	}
+
+	virtual ~Actor() {
+
+	}
+
 	enum {
 		BOOT
 	};
@@ -55,7 +63,7 @@ public:
 		return size;
 	}
 
-	void Die() {
+	void Die(Message & message) {
 		dead = true;
 	}
 
